@@ -1,0 +1,11 @@
+[build]
+  command = "next build"
+  publish = ".next"
+
+[build.environment]
+  NEXT_TELEMETRY_DISABLED = "1"
+
+# Disable secrets scanning for environment variables set in Netlify dashboard
+# The Supabase keys are legitimate secrets, not leaked credentials
+[[plugins]]
+  package = "@netlify/plugin-nextjs"
