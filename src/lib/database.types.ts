@@ -169,6 +169,35 @@ export interface Database {
           created_at?: string;
         };
       };
+      reviews: {
+        Row: {
+          id: string;
+          product_id: string;
+          customer_name: string;
+          customer_email: string;
+          rating: number;
+          comment: string | null;
+          created_at: string;
+        };
+        Insert: {
+          id?: string;
+          product_id: string;
+          customer_name: string;
+          customer_email: string;
+          rating: number;
+          comment?: string | null;
+          created_at?: string;
+        };
+        Update: {
+          id?: string;
+          product_id?: string;
+          customer_name?: string;
+          customer_email?: string;
+          rating?: number;
+          comment?: string | null;
+          created_at?: string;
+        };
+      };
     };
     Views: {};
     Functions: {};

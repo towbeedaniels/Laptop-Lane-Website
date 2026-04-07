@@ -54,6 +54,16 @@ export interface User {
   created_at: string;
 }
 
+export interface Review {
+  id: string;
+  product_id: string;
+  customer_name: string;
+  customer_email: string;
+  rating: number;
+  comment?: string;
+  created_at: string;
+}
+
 export interface CartItem {
   product: Product;
   quantity: number;
