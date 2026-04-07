@@ -5,23 +5,25 @@ import { ArrowRight, Laptop, Keyboard, Mouse, HardDrive, Usb, Truck, Shield, Hea
 import { supabase } from '@/lib/supabase';
 import { useEffect, useState } from 'react';
 import type { Product } from '@/types';
-
-const categories = [
-  { id: 'laptop', name: 'Laptops', icon: Laptop, color: 'from-blue-500 to-blue-700' },
-  { id: 'keyboard', name: 'Keyboards', icon: Keyboard, color: 'from-purple-500 to-purple-700' },
-  { id: 'mouse', name: 'Mouse', icon: Mouse, color: 'from-green-500 to-green-700' },
-  { id: 'external_hard_drive', name: 'External Drives', icon: HardDrive, color: 'from-orange-500 to-orange-700' },
-  { id: 'flash_drive', name: 'Flash Drives', icon: Usb, color: 'from-pink-500 to-pink-700' },
-];
-
-const features = [
-  { icon: Truck, title: 'Fast Delivery', description: 'Free shipping on orders over ₦500,000' },
-  { icon: Shield, title: 'Secure Payment', description: '100% secure payment processing' },
-  { icon: Headphones, title: '24/7 Support', description: 'Dedicated customer support' },
-];
+import { useLanguageStore } from '@/store/languageStore';
 
 export default function Home() {
+  const t = useLanguageStore((state) => state.t);
   const [featuredProducts, setFeaturedProducts] = useState<Product[]>([]);
+
+  const categories = [
+    { id: 'laptop', name: 'Laptops', icon: Laptop, color: 'from-blue-500 to-blue-700' },
+    { id: 'keyboard', name: 'Keyboards', icon: Keyboard, color: 'from-purple-500 to-purple-700' },
+    { id: 'mouse', name: 'Mouse', icon: Mouse, color: 'from-green-500 to-green-700' },
+    { id: 'external_hard_drive', name: 'External Drives', icon: HardDrive, color: 'from-orange-500 to-orange-700' },
+    { id: 'flash_drive', name: 'Flash Drives', icon: Usb, color: 'from-pink-500 to-pink-700' },
+  ];
+
+  const features = [
+    { icon: Truck, title: t.features.fastDelivery, description: t.features.fastDeliveryDesc },
+    { icon: Shield, title: t.features.securePayment, description: t.features.securePaymentDesc },
+    { icon: Headphones, title: t.features.support, description: t.features.supportDesc },
+  ];
 
   useEffect(() => {
     const fetchProducts = async () => {
@@ -46,19 +48,19 @@ export default function Home() {
           <div className="grid md:grid-cols-2 gap-12 items-center">
             <div>
               <h1 className="text-4xl md:text-6xl font-bold mb-6 leading-tight">
-                Welcome to
+                {t.hero.title}
                 <span className="block text-accent-500">Laptop Lane</span>
               </h1>
               <p className="text-xl md:text-2xl text-white/90 mb-8">
-                Your one-stop destination for premium laptops, keyboards, mouse, and storage solutions. Quality tech, delivered fast.
+                {t.hero.subtitle}
               </p>
               <div className="flex flex-wrap gap-4">
                 <Link href="/products" className="btn-primary bg-white text-primary-700 hover:bg-gray-100">
-                  Shop Now
+                  {t.hero.shopNow}
                   <ArrowRight className="inline-block ml-2 h-5 w-5" />
                 </Link>
                 <Link href="/track-order" className="bg-transparent border-2 border-white text-white hover:bg-white/10 font-semibold py-3 px-6 rounded-lg transition-all duration-200">
-                  Track Order
+                  {t.hero.trackOrder}
                 </Link>
               </div>
             </div>
@@ -95,8 +97,8 @@ export default function Home() {
       <section className="py-20">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           <div className="text-center mb-12">
-            <h2 className="section-title">Shop by Category</h2>
-            <p className="section-subtitle">Find exactly what you need from our wide range of products</p>
+            <h2 className="section-title">{t.categories.title}</h2>
+            <p className="section-subtitle">{t.categories.subtitle}</p>
           </div>
           <div className="grid grid-cols-2 md:grid-cols-5 gap-6">
             {categories.map((category) => (
@@ -119,8 +121,8 @@ export default function Home() {
       <section className="py-20 bg-gray-50">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           <div className="text-center mb-12">
-            <h2 className="section-title">Featured Products</h2>
-            <p className="section-subtitle">Check out our latest arrivals and best sellers</p>
+            <h2 className="section-title">{t.featured.title}</h2>
+            <p className="section-subtitle">{t.featured.subtitle}</p>
           </div>
           {featuredProducts.length > 0 ? (
             <div className="grid md:grid-cols-2 lg:grid-cols-4 gap-6">
@@ -143,15 +145,15 @@ export default function Home() {
             </div>
           ) : (
             <div className="text-center py-12">
-              <p className="text-gray-500">Products coming soon! Check back later.</p>
+              <p className="text-gray-500">{t.featured.comingSoon}</p>
               <Link href="/admin" className="btn-primary mt-4 inline-block">
-                Admin: Add Products
+                {t.featured.adminAdd}
               </Link>
             </div>
           )}
           <div className="text-center mt-12">
             <Link href="/products" className="btn-primary">
-              View All Products
+              {t.featured.viewAll}
               <ArrowRight className="inline-block ml-2 h-5 w-5" />
             </Link>
           </div>
@@ -161,12 +163,12 @@ export default function Home() {
       {/* CTA Section */}
       <section className="py-20 bg-primary-900 text-white">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 text-center">
-          <h2 className="text-3xl md:text-4xl font-bold mb-4">Ready to Upgrade Your Tech?</h2>
+          <h2 className="text-3xl md:text-4xl font-bold mb-4">{t.cta.title}</h2>
           <p className="text-xl text-white/80 mb-8 max-w-2xl mx-auto">
-            Browse our collection of premium products and find the perfect tech for your needs.
+            {t.cta.subtitle}
           </p>
           <Link href="/products" className="btn-primary bg-white text-primary-700 hover:bg-gray-100">
-            Start Shopping
+            {t.cta.startShopping}
           </Link>
         </div>
       </section>

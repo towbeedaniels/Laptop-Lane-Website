@@ -6,6 +6,8 @@ import { useState, useEffect } from 'react';
 import { ShoppingCart, Menu, X, Heart, Sun, Moon } from 'lucide-react';
 import { useCartStore } from '@/store/cartStore';
 import { useWishlistStore } from '@/store/wishlistStore';
+import LanguageSwitcher from '@/components/LanguageSwitcher';
+import { useLanguageStore } from '@/store/languageStore';
 
 export default function Header() {
   const [isMenuOpen, setIsMenuOpen] = useState(false);
@@ -36,10 +38,12 @@ export default function Header() {
     }
   };
 
+  const t = useLanguageStore((state) => state.t);
+
   const navLinks = [
-    { href: '/', label: 'Home' },
-    { href: '/products', label: 'Products' },
-    { href: '/track-order', label: 'Track Order' },
+    { href: '/', label: t.nav.home },
+    { href: '/products', label: t.nav.products },
+    { href: '/track-order', label: t.nav.trackOrder },
   ];
 
   return (
@@ -72,6 +76,7 @@ export default function Header() {
 
           {/* Icons */}
           <div className="flex items-center space-x-3">
+            <LanguageSwitcher />
             {isClient && (
               <button
                 onClick={toggleTheme}

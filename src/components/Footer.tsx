@@ -1,8 +1,13 @@
+'use client';
+
 import Link from 'next/link';
 import Image from 'next/image';
 import { Facebook, Twitter, Instagram, Mail, Phone, MapPin } from 'lucide-react';
+import { useLanguageStore } from '@/store/languageStore';
 
 export default function Footer() {
+  const t = useLanguageStore((state) => state.t);
+
   return (
     <footer className="bg-primary-950 text-white">
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-12">
@@ -14,13 +19,13 @@ export default function Footer() {
               <span className="text-xl font-bold">LaptopLane</span>
             </Link>
             <p className="text-gray-300 text-sm">
-              Your trusted destination for quality tech products. We deliver excellence right to your doorstep.
+              {t.footer.description}
             </p>
           </div>
 
           {/* Quick Links */}
           <div>
-            <h3 className="font-semibold text-lg mb-4">Quick Links</h3>
+            <h3 className="font-semibold text-lg mb-4">{t.footer.quickLinks}</h3>
             <ul className="space-y-2">
               <li>
                 <Link href="/products?category=laptop" className="text-gray-300 hover:text-white transition-colors">
@@ -56,12 +61,12 @@ export default function Footer() {
               </li>
               <li>
                 <Link href="/cart" className="text-gray-300 hover:text-white transition-colors">
-                  Shopping Cart
+                  {t.nav.cart}
                 </Link>
               </li>
               <li>
                 <Link href="/admin/signin" className="text-gray-300 hover:text-white transition-colors">
-                  Admin Login
+                  {t.footer.adminLogin}
                 </Link>
               </li>
             </ul>
@@ -69,7 +74,7 @@ export default function Footer() {
 
           {/* Contact */}
           <div>
-            <h3 className="font-semibold text-lg mb-4">Contact Us</h3>
+            <h3 className="font-semibold text-lg mb-4">{t.footer.contact}</h3>
             <ul className="space-y-3">
               <li className="flex items-center space-x-2 text-gray-300">
                 <Mail className="h-4 w-4" />
@@ -99,7 +104,7 @@ export default function Footer() {
         </div>
 
         <div className="border-t border-white/10 mt-8 pt-8 text-center text-gray-400 text-sm">
-          <p>&copy; {new Date().getFullYear()} Laptop Lane. All rights reserved.</p>
+          <p>&copy; {new Date().getFullYear()} Laptop Lane. {t.footer.copyright}</p>
         </div>
       </div>
     </footer>
