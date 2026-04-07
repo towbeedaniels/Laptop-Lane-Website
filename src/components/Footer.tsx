@@ -56,7 +56,7 @@ export default function Footer() {
             <ul className="space-y-2">
               <li>
                 <Link href="/track-order" className="text-gray-300 hover:text-white transition-colors">
-                  Track Order
+                  {t.nav.trackOrder}
                 </Link>
               </li>
               <li>
@@ -67,6 +67,28 @@ export default function Footer() {
               <li>
                 <Link href="/admin/signin" className="text-gray-300 hover:text-white transition-colors">
                   {t.footer.adminLogin}
+                </Link>
+              </li>
+            </ul>
+          </div>
+
+          {/* Legal */}
+          <div>
+            <h3 className="font-semibold text-lg mb-4">Legal</h3>
+            <ul className="space-y-2">
+              <li>
+                <Link href="/privacy-policy" className="text-gray-300 hover:text-white transition-colors">
+                  Privacy Policy
+                </Link>
+              </li>
+              <li>
+                <Link href="/terms-of-service" className="text-gray-300 hover:text-white transition-colors">
+                  Terms of Service
+                </Link>
+              </li>
+              <li>
+                <Link href="/cookie-policy" className="text-gray-300 hover:text-white transition-colors">
+                  Cookie Policy
                 </Link>
               </li>
             </ul>
