@@ -25,7 +25,7 @@ function ProductsContent() {
     { id: 'all', label: 'All Products' },
     { id: 'laptop', label: 'Laptops' },
     { id: 'keyboard', label: 'Keyboards' },
-    { id: 'mouse', label: 'Mice' },
+    { id: 'mouse', label: 'Mouse' },
     { id: 'external_hard_drive', label: 'External Drives' },
     { id: 'flash_drive', label: 'Flash Drives' },
   ];
@@ -161,7 +161,7 @@ function ProductsContent() {
                         </Link>
                         <div className="flex items-center justify-between">
                           <p className="text-primary-600 font-bold text-lg">
-                            ${product.price.toLocaleString()}
+                            ₦{product.price.toLocaleString()}
                           </p>
                           <button
                             onClick={() => handleAddToCart(product)}

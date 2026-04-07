@@ -19,7 +19,7 @@ export default function AdminLayout({ children }: { children: React.ReactNode })
   const router = useRouter();
   const pathname = usePathname();
   const [loading, setLoading] = useState(true);
-  const [isSidebarOpen, setIsSidebarOpen] = useState(false);
+  const [isSidebarOpen, setIsSidebarOpen] = useState(true);
 
   const navItems = [
     { href: '/admin', icon: LayoutDashboard, label: 'Dashboard' },
@@ -28,32 +28,43 @@ export default function AdminLayout({ children }: { children: React.ReactNode })
   ];
 
   useEffect(() => {
-    const checkAuth = async () => {
-      const { data: { session } } = await supabase.auth.getSession();
-
-      if (!session) {
-        router.push('/admin/signin');
-        return;
-      }
-
-      // Check if admin
-      const { data: profile } = await supabase
-        .from('profiles')
-        .select('role')
-        .eq('id', session.user.id)
-        .single();
-
-      if ((profile as any)?.role !== 'admin') {
-        await supabase.auth.signOut();
-        router.push('/admin/signin');
-        return;
-      }
-
+    // Skip auth check on signin page
+    if (pathname === '/admin/signin') {
       setLoading(false);
+      return;
+    }
+
+    const checkAuth = async () => {
+      try {
+        const { data: { session }, error: sessionError } = await supabase.auth.getSession();
+
+        if (sessionError || !session) {
+          router.push('/admin/signin');
+          return;
+        }
+
+        // Check if admin
+        const { data: profile, error: profileError } = await supabase
+          .from('profiles')
+          .select('role')
+          .eq('id', session.user.id)
+          .single();
+
+        if (profileError || (profile as any)?.role !== 'admin') {
+          await supabase.auth.signOut().catch(() => {});
+          router.push('/admin/signin');
+          return;
+        }
+
+        setLoading(false);
+      } catch (error) {
+        console.error('Auth check failed:', error);
+        router.push('/admin/signin');
+      }
     };
 
     checkAuth();
-  }, [router]);
+  }, [router, pathname]);
 
   const handleLogout = async () => {
     await supabase.auth.signOut();
@@ -68,9 +79,14 @@ export default function AdminLayout({ children }: { children: React.ReactNode })
     );
   }
 
+  // Render signin page without layout wrapper
+  if (pathname === '/admin/signin') {
+    return <>{children}</>;
+  }
+
   return (
     <div className="min-h-screen bg-gray-100">
-      {/* Mobile Sidebar Overlay */}
+      {/* Sidebar Overlay */}
       {isSidebarOpen && (
         <div
           className="fixed inset-0 bg-black/50 z-40 lg:hidden"
@@ -80,11 +96,11 @@ export default function AdminLayout({ children }: { children: React.ReactNode })
 
       {/* Sidebar */}
       <aside
-        className={`fixed top-0 left-0 h-full w-64 bg-primary-900 text-white z-50 transform transition-transform duration-300 lg:translate-x-0 ${
-          isSidebarOpen ? 'translate-x-0' : '-translate-x-full'
+        className={`fixed top-0 left-0 h-full bg-primary-900 text-white z-50 transform transition-all duration-300 ${
+          isSidebarOpen ? 'w-64 translate-x-0' : 'w-64 -translate-x-full lg:w-0 lg:translate-x-0 lg:overflow-hidden'
         }`}
       >
-        <div className="p-6">
+        <div className="p-6 min-w-64">
           <Link href="/" className="flex items-center space-x-3 mb-8">
             <Image src="/logo.png" alt="Laptop Lane" width={40} height={40} className="h-10 w-10" />
             <span className="text-xl font-bold">LaptopLane</span>
@@ -95,7 +111,6 @@ export default function AdminLayout({ children }: { children: React.ReactNode })
               <Link
                 key={item.href}
                 href={item.href}
-                onClick={() => setIsSidebarOpen(false)}
                 className={`flex items-center space-x-3 px-4 py-3 rounded-lg transition-colors ${
                   pathname === item.href
                     ? 'bg-white/10 text-white'
@@ -109,7 +124,7 @@ export default function AdminLayout({ children }: { children: React.ReactNode })
           </nav>
         </div>
 
-        <div className="absolute bottom-0 left-0 right-0 p-6">
+        <div className="absolute bottom-0 left-0 right-0 p-6 min-w-64">
           <button
             onClick={handleLogout}
             className="flex items-center space-x-3 px-4 py-3 rounded-lg text-white/70 hover:bg-white/5 hover:text-white w-full transition-colors"
@@ -121,15 +136,15 @@ export default function AdminLayout({ children }: { children: React.ReactNode })
       </aside>
 
       {/* Main Content */}
-      <div className="lg:ml-64">
+      <div className={`transition-all duration-300 ${isSidebarOpen ? 'lg:ml-64' : 'lg:ml-0'}`}>
         {/* Top Bar */}
         <header className="bg-white shadow-sm sticky top-0 z-30">
           <div className="flex items-center justify-between px-6 py-4">
             <button
-              onClick={() => setIsSidebarOpen(true)}
-              className="lg:hidden p-2 text-gray-600 hover:bg-gray-100 rounded-lg"
+              onClick={() => setIsSidebarOpen(!isSidebarOpen)}
+              className="p-2 text-gray-600 hover:bg-gray-100 rounded-lg"
             >
-              <Menu className="h-6 w-6" />
+              {isSidebarOpen ? <X className="h-6 w-6" /> : <Menu className="h-6 w-6" />}
             </button>
             <div className="flex-1"></div>
             <Link href="/" className="text-primary-600 hover:text-primary-700 font-medium">

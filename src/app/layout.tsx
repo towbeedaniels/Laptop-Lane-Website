@@ -3,12 +3,13 @@ import { Inter } from "next/font/google";
 import "./globals.css";
 import Header from "@/components/Header";
 import Footer from "@/components/Footer";
+import SiteWrapper from "@/components/SiteWrapper";
 
 const inter = Inter({ subsets: ["latin"] });
 
 export const metadata: Metadata = {
   title: "Laptop Lane - Your Destination for Quality Tech Products",
-  description: "Shop laptops, keyboards, mice, external hard drives, and flash drives at the best prices. Fast delivery and excellent customer service.",
+  description: "Shop laptops, keyboards, mouse, external hard drives, and flash drives at the best prices. Fast delivery and excellent customer service.",
 };
 
 export default function RootLayout({
@@ -19,9 +20,7 @@ export default function RootLayout({
   return (
     <html lang="en">
       <body className={inter.className}>
-        <Header />
-        <main className="min-h-screen">{children}</main>
-        <Footer />
+        <SiteWrapper>{children}</SiteWrapper>
       </body>
     </html>
   );

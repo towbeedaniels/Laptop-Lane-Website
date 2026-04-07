@@ -64,7 +64,7 @@ export type Category = 'laptop' | 'keyboard' | 'mouse' | 'external_hard_drive' |
 export const CATEGORY_LABELS: Record<Category, string> = {
   laptop: 'Laptops',
   keyboard: 'Keyboards',
-  mouse: 'Mice',
+  mouse: 'Mouse',
   external_hard_drive: 'External Hard Drives',
   flash_drive: 'Flash Drives',
 };

@@ -156,7 +156,7 @@ export default function AdminOrdersPage() {
                     {order.tracking_number || 'N/A'}
                   </td>
                   <td className="px-6 py-4 whitespace-nowrap text-sm font-medium text-gray-900">
-                    ${order.total_amount.toLocaleString()}
+                    ₦{order.total_amount.toLocaleString()}
                   </td>
                   <td className="px-6 py-4 whitespace-nowrap">
                     <span className={`px-3 py-1 rounded-full text-xs font-medium ${getStatusColor(order.status)}`}>
@@ -242,9 +242,9 @@ export default function AdminOrdersPage() {
                         <tr key={item.id} className="border-t">
                           <td className="px-4 py-3 text-sm text-gray-900">{item.products.name}</td>
                           <td className="px-4 py-3 text-sm text-gray-600">{item.quantity}</td>
-                          <td className="px-4 py-3 text-sm text-gray-600">${item.price.toLocaleString()}</td>
+                          <td className="px-4 py-3 text-sm text-gray-600">₦{item.price.toLocaleString()}</td>
                           <td className="px-4 py-3 text-sm font-medium text-gray-900">
-                            ${(item.price * item.quantity).toLocaleString()}
+                            ₦{(item.price * item.quantity).toLocaleString()}
                           </td>
                         </tr>
                       ))}
@@ -253,7 +253,7 @@ export default function AdminOrdersPage() {
                       <tr>
                         <td colSpan={3} className="px-4 py-3 text-right font-semibold text-gray-900">Total:</td>
                         <td className="px-4 py-3 font-bold text-primary-600">
-                          ${selectedOrder.total_amount.toLocaleString()}
+                          ₦{selectedOrder.total_amount.toLocaleString()}
                         </td>
                       </tr>
                     </tfoot>

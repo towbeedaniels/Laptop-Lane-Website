@@ -75,7 +75,7 @@ export default function AdminDashboard() {
     },
     {
       title: 'Total Revenue',
-      value: `$${stats.totalRevenue.toLocaleString()}`,
+      value: `₦${stats.totalRevenue.toLocaleString()}`,
       icon: DollarSign,
       color: 'bg-green-500',
     },

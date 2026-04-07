@@ -34,7 +34,7 @@ export default function Footer() {
               </li>
               <li>
                 <Link href="/products?category=mouse" className="text-gray-300 hover:text-white transition-colors">
-                  Mice
+                  Mouse
                 </Link>
               </li>
               <li>

@@ -4,7 +4,7 @@
 import { useEffect, useState } from 'react';
 import { supabase } from '@/lib/supabase';
 import type { Product, Category } from '@/types';
-import { Plus, Edit, Trash2, X, Laptop } from 'lucide-react';
+import { Plus, Edit, Trash2, X, Laptop, PlusCircle, MinusCircle } from 'lucide-react';
 
 const CATEGORY_OPTIONS: { value: Category; label: string }[] = [
   { value: 'laptop', label: 'Laptop' },
@@ -13,6 +13,8 @@ const CATEGORY_OPTIONS: { value: Category; label: string }[] = [
   { value: 'external_hard_drive', label: 'External Hard Drive' },
   { value: 'flash_drive', label: 'Flash Drive' },
 ];
+
+type SpecEntry = { key: string; value: string };
 
 export default function AdminProductsPage() {
   const [products, setProducts] = useState<Product[]>([]);
@@ -27,8 +29,8 @@ export default function AdminProductsPage() {
     brand: '',
     image_url: '',
     stock_quantity: '',
-    specifications: '',
   });
+  const [specEntries, setSpecEntries] = useState<SpecEntry[]>([{ key: '', value: '' }]);
 
   useEffect(() => {
     fetchProducts();
@@ -53,8 +55,11 @@ export default function AdminProductsPage() {
         brand: product.brand,
         image_url: product.image_url || '',
         stock_quantity: product.stock_quantity.toString(),
-        specifications: JSON.stringify(product.specifications, null, 2),
       });
+      const specs = product.specifications && typeof product.specifications === 'object'
+        ? Object.entries(product.specifications).map(([key, value]) => ({ key, value: String(value) }))
+        : [{ key: '', value: '' }];
+      setSpecEntries(specs.length > 0 ? specs : [{ key: '', value: '' }]);
     } else {
       setEditingProduct(null);
       setFormData({
@@ -65,10 +70,34 @@ export default function AdminProductsPage() {
         brand: '',
         image_url: '',
         stock_quantity: '',
-        specifications: '',
       });
+      setSpecEntries([{ key: '', value: '' }]);
     }
     setShowModal(true);
+  };
+
+  const addSpecEntry = () => {
+    setSpecEntries([...specEntries, { key: '', value: '' }]);
+  };
+
+  const removeSpecEntry = (index: number) => {
+    setSpecEntries(specEntries.filter((_, i) => i !== index));
+  };
+
+  const updateSpecEntry = (index: number, field: 'key' | 'value', val: string) => {
+    const updated = [...specEntries];
+    updated[index] = { ...updated[index], [field]: val };
+    setSpecEntries(updated);
+  };
+
+  const specsToObject = (): Record<string, string> => {
+    const result: Record<string, string> = {};
+    specEntries.forEach(({ key, value }) => {
+      if (key.trim() && value.trim()) {
+        result[key.trim()] = value.trim();
+      }
+    });
+    return result;
   };
 
   const handleSubmit = async (e: React.FormEvent) => {
@@ -82,12 +111,11 @@ export default function AdminProductsPage() {
       brand: formData.brand,
       image_url: formData.image_url,
       stock_quantity: parseInt(formData.stock_quantity) || 0,
-      specifications: formData.specifications ? JSON.parse(formData.specifications) : {},
+      specifications: specsToObject(),
     };
 
     try {
       if (editingProduct) {
-        // Update using REST API
         const response = await fetch(
           `${process.env.NEXT_PUBLIC_SUPABASE_URL}/rest/v1/products?id=eq.${editingProduct.id}`,
           {
@@ -103,7 +131,6 @@ export default function AdminProductsPage() {
         );
         if (!response.ok) throw new Error('Failed to update product');
       } else {
-        // Insert using REST API
         const response = await fetch(
           `${process.env.NEXT_PUBLIC_SUPABASE_URL}/rest/v1/products`,
           {
@@ -130,7 +157,6 @@ export default function AdminProductsPage() {
   const handleDelete = async (id: string) => {
     if (!confirm('Are you sure you want to delete this product?')) return;
 
-    // Delete using REST API
     const response = await fetch(
       `${process.env.NEXT_PUBLIC_SUPABASE_URL}/rest/v1/products?id=eq.${id}`,
       {
@@ -141,7 +167,7 @@ export default function AdminProductsPage() {
         },
       }
     );
-    
+
     if (response.ok) {
       fetchProducts();
     }
@@ -197,7 +223,7 @@ export default function AdminProductsPage() {
                     </span>
                   </td>
                   <td className="px-6 py-4 text-sm font-medium text-gray-900">
-                    ${product.price.toLocaleString()}
+                    ₦{product.price.toLocaleString()}
                   </td>
                   <td className="px-6 py-4 text-sm text-gray-600">{product.stock_quantity}</td>
                   <td className="px-6 py-4">
@@ -297,7 +323,7 @@ export default function AdminProductsPage() {
                   </select>
                 </div>
                 <div>
-                  <label className="block text-sm font-medium text-gray-700 mb-2">Price ($) *</label>
+                  <label className="block text-sm font-medium text-gray-700 mb-2">Price (₦) *</label>
                   <input
                     type="number"
                     step="0.01"
@@ -331,16 +357,41 @@ export default function AdminProductsPage() {
               </div>
 
               <div>
-                <label className="block text-sm font-medium text-gray-700 mb-2">
-                  Specifications (JSON format)
-                </label>
-                <textarea
-                  value={formData.specifications}
-                  onChange={(e) => setFormData({ ...formData, specifications: e.target.value })}
-                  rows={4}
-                  className="input-field font-mono text-sm"
-                  placeholder='{"processor": "Intel i7", "ram": "16GB", "storage": "512GB SSD"}'
-                />
+                <label className="block text-sm font-medium text-gray-700 mb-2">Specifications</label>
+                {specEntries.map((spec, index) => (
+                  <div key={index} className="flex items-center gap-2 mb-2">
+                    <input
+                      type="text"
+                      value={spec.key}
+                      onChange={(e) => updateSpecEntry(index, 'key', e.target.value)}
+                      placeholder="Key (e.g. RAM)"
+                      className="input-field flex-1"
+                    />
+                    <input
+                      type="text"
+                      value={spec.value}
+                      onChange={(e) => updateSpecEntry(index, 'value', e.target.value)}
+                      placeholder="Value (e.g. 16GB)"
+                      className="input-field flex-1"
+                    />
+                    <button
+                      type="button"
+                      onClick={() => removeSpecEntry(index)}
+                      className="p-2 text-red-500 hover:bg-red-50 rounded-lg transition-colors"
+                      disabled={specEntries.length === 1}
+                    >
+                      <MinusCircle className="h-5 w-5" />
+                    </button>
+                  </div>
+                ))}
+                <button
+                  type="button"
+                  onClick={addSpecEntry}
+                  className="flex items-center space-x-2 text-primary-600 hover:text-primary-700 text-sm font-medium mt-1"
+                >
+                  <PlusCircle className="h-4 w-4" />
+                  <span>Add Specification</span>
+                </button>
               </div>
 
               <div className="flex justify-end space-x-4 pt-4">

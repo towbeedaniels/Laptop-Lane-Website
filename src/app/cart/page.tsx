@@ -55,7 +55,7 @@ export default function CartPage() {
                     </Link>
                     <p className="text-sm text-gray-500">{item.product.brand}</p>
                     <p className="text-primary-600 font-bold mt-1">
-                      ${item.product.price.toLocaleString()}
+                      ₦{item.product.price.toLocaleString()}
                     </p>
                   </div>
 
@@ -80,7 +80,7 @@ export default function CartPage() {
                   {/* Item Total */}
                   <div className="text-right">
                     <p className="font-bold text-gray-900 text-lg">
-                      ${(item.product.price * item.quantity).toLocaleString()}
+                      ₦{(item.product.price * item.quantity).toLocaleString()}
                     </p>
                   </div>
 
@@ -104,7 +104,7 @@ export default function CartPage() {
               <div className="space-y-4 mb-6">
                 <div className="flex justify-between text-gray-600">
                   <span>Subtotal</span>
-                  <span>${getTotalPrice().toLocaleString()}</span>
+                  <span>₦{getTotalPrice().toLocaleString()}</span>
                 </div>
                 <div className="flex justify-between text-gray-600">
                   <span>Shipping</span>
@@ -114,7 +114,7 @@ export default function CartPage() {
                   <div className="flex justify-between text-lg font-bold text-gray-900">
                     <span>Total</span>
                     <span className="text-primary-600">
-                      ${getTotalPrice().toLocaleString()}
+                      ₦{getTotalPrice().toLocaleString()}
                     </span>
                   </div>
                 </div>

@@ -1,0 +1,15 @@
+{
+  "permissions": {
+    "allow": [
+      "Bash(ls *)",
+      "Bash(pkill *)",
+      "Bash(sleep *)",
+      "Bash(rm *)",
+      "Bash(cd *)",
+      "Bash(npm run *)",
+      "Bash(curl *)",
+      "Bash(echo *)"
+    ]
+  },
+  "$version": 3
+}

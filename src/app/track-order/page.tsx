@@ -243,7 +243,7 @@ function TrackOrderContent() {
                 <div className="space-y-2">
                   <div className="flex justify-between text-gray-600">
                     <span>Subtotal</span>
-                    <span>${order.total_amount.toLocaleString()}</span>
+                    <span>₦{order.total_amount.toLocaleString()}</span>
                   </div>
                   <div className="flex justify-between text-gray-600">
                     <span>Shipping</span>
@@ -251,7 +251,7 @@ function TrackOrderContent() {
                   </div>
                   <div className="border-t pt-2 flex justify-between font-bold text-gray-900">
                     <span>Total Paid</span>
-                    <span className="text-primary-600">${order.total_amount.toLocaleString()}</span>
+                    <span className="text-primary-600">₦{order.total_amount.toLocaleString()}</span>
                   </div>
                 </div>
               </div>
@@ -259,12 +259,12 @@ function TrackOrderContent() {
 
             {/* Order Items */}
             <div className="bg-white rounded-xl shadow-md p-6 mb-8">
-              <h3 className="font-bold text-gray-900 mb-4">Order Items</h3>
+              <h3 className="font-bold text-gray-900 mb-4">Ordered Products</h3>
               <div className="space-y-4">
                 {orderItems.map((item) => (
                   <div key={item.id} className="flex items-center space-x-4 pb-4 border-b last:border-0">
-                    <div className="w-16 h-16 bg-gray-100 rounded-lg flex items-center justify-center">
-                      {item.products.image_url ? (
+                    <div className="w-16 h-16 bg-gray-100 rounded-lg flex items-center justify-center flex-shrink-0">
+                      {item.products?.image_url ? (
                         <img
                           src={item.products.image_url}
                           alt={item.products.name}
@@ -274,16 +274,25 @@ function TrackOrderContent() {
                         <Package className="h-8 w-8 text-gray-400" />
                       )}
                     </div>
-                    <div className="flex-1">
-                      <p className="font-medium text-gray-900">{item.products.name}</p>
+                    <div className="flex-1 min-w-0">
+                      <p className="font-medium text-gray-900 truncate">{item.products?.name || 'Product'}</p>
                       <p className="text-sm text-gray-500">Qty: {item.quantity}</p>
+                      <p className="text-sm text-gray-500">Unit Price: ₦{item.price?.toLocaleString()}</p>
                     </div>
-                    <p className="font-medium text-gray-900">
-                      ${(item.price * item.quantity).toLocaleString()}
-                    </p>
+                    <div className="text-right flex-shrink-0">
+                      <p className="font-medium text-gray-900">
+                        ₦{(item.price * item.quantity).toLocaleString()}
+                      </p>
+                      <span className={`inline-block mt-1 px-2 py-0.5 rounded-full text-xs font-medium ${statusColors[order.status]}`}>
+                        {order.status.replace('_', ' ')}
+                      </span>
+                    </div>
                   </div>
                 ))}
               </div>
+              {orderItems.length === 0 && (
+                <p className="text-gray-500 text-center py-4">No items found for this order.</p>
+              )}
             </div>
 
             {/* Tracking History */}

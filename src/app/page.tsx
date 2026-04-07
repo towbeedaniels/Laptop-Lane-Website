@@ -9,13 +9,13 @@ import type { Product } from '@/types';
 const categories = [
   { id: 'laptop', name: 'Laptops', icon: Laptop, color: 'from-blue-500 to-blue-700' },
   { id: 'keyboard', name: 'Keyboards', icon: Keyboard, color: 'from-purple-500 to-purple-700' },
-  { id: 'mouse', name: 'Mice', icon: Mouse, color: 'from-green-500 to-green-700' },
+  { id: 'mouse', name: 'Mouse', icon: Mouse, color: 'from-green-500 to-green-700' },
   { id: 'external_hard_drive', name: 'External Drives', icon: HardDrive, color: 'from-orange-500 to-orange-700' },
   { id: 'flash_drive', name: 'Flash Drives', icon: Usb, color: 'from-pink-500 to-pink-700' },
 ];
 
 const features = [
-  { icon: Truck, title: 'Fast Delivery', description: 'Free shipping on orders over $500' },
+  { icon: Truck, title: 'Fast Delivery', description: 'Free shipping on orders over ₦500,000' },
   { icon: Shield, title: 'Secure Payment', description: '100% secure payment processing' },
   { icon: Headphones, title: '24/7 Support', description: 'Dedicated customer support' },
 ];
@@ -50,14 +50,14 @@ export default function Home() {
                 <span className="block text-accent-500">Laptop Lane</span>
               </h1>
               <p className="text-xl md:text-2xl text-white/90 mb-8">
-                Your one-stop destination for premium laptops, keyboards, mice, and storage solutions. Quality tech, delivered fast.
+                Your one-stop destination for premium laptops, keyboards, mouse, and storage solutions. Quality tech, delivered fast.
               </p>
               <div className="flex flex-wrap gap-4">
                 <Link href="/products" className="btn-primary bg-white text-primary-700 hover:bg-gray-100">
                   Shop Now
                   <ArrowRight className="inline-block ml-2 h-5 w-5" />
                 </Link>
-                <Link href="/track-order" className="btn-secondary border-white text-white hover:bg-white/10">
+                <Link href="/track-order" className="bg-transparent border-2 border-white text-white hover:bg-white/10 font-semibold py-3 px-6 rounded-lg transition-all duration-200">
                   Track Order
                 </Link>
               </div>
@@ -136,7 +136,7 @@ export default function Home() {
                   <div className="p-4">
                     <p className="text-sm text-gray-500 mb-1">{product.brand}</p>
                     <h3 className="font-semibold text-gray-900 mb-2 truncate">{product.name}</h3>
-                    <p className="text-primary-600 font-bold">${product.price.toLocaleString()}</p>
+                    <p className="text-primary-600 font-bold">₦{product.price.toLocaleString()}</p>
                   </div>
                 </Link>
               ))}

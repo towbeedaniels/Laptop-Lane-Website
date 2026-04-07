@@ -45,7 +45,7 @@ export default function CheckoutPage() {
       const trackingNumber = `LL${Date.now()}`;
       const totalAmount = getTotalPrice();
 
-      // Create order using REST API
+      // Create order
       const orderResponse = await fetch(
         `${process.env.NEXT_PUBLIC_SUPABASE_URL}/rest/v1/orders`,
         {
@@ -72,35 +72,42 @@ export default function CheckoutPage() {
         }
       );
 
-      if (!orderResponse.ok) throw new Error('Failed to create order');
+      if (!orderResponse.ok) {
+        const errBody = await orderResponse.text();
+        throw new Error(`Failed to create order: ${errBody}`);
+      }
       const order = await orderResponse.json();
+      const orderId = order[0].id;
 
-      // Create order items using REST API
-      const orderItems = items.map((item) => ({
-        order_id: order[0].id,
-        product_id: item.product.id,
-        quantity: item.quantity,
-        price: item.product.price,
-      }));
+      // Create order items one at a time
+      for (const item of items) {
+        const itemResponse = await fetch(
+          `${process.env.NEXT_PUBLIC_SUPABASE_URL}/rest/v1/order_items`,
+          {
+            method: 'POST',
+            headers: {
+              'Content-Type': 'application/json',
+              'apikey': process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY!,
+              'Authorization': `Bearer ${process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY!}`,
+              'Prefer': 'return=minimal'
+            },
+            body: JSON.stringify({
+              order_id: orderId,
+              product_id: item.product.id,
+              quantity: item.quantity,
+              price: item.product.price,
+            }),
+          }
+        );
 
-      const itemsResponse = await fetch(
-        `${process.env.NEXT_PUBLIC_SUPABASE_URL}/rest/v1/order_items`,
-        {
-          method: 'POST',
-          headers: {
-            'Content-Type': 'application/json',
-            'apikey': process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY!,
-            'Authorization': `Bearer ${process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY!}`,
-            'Prefer': 'return=minimal'
-          },
-          body: JSON.stringify(orderItems),
+        if (!itemResponse.ok) {
+          const errBody = await itemResponse.text();
+          throw new Error(`Failed to create order item: ${errBody}`);
         }
-      );
+      }
 
-      if (!itemsResponse.ok) throw new Error('Failed to create order items');
-
-      // Create initial tracking entry using REST API
-      await fetch(
+      // Create initial tracking entry
+      const trackingResponse = await fetch(
         `${process.env.NEXT_PUBLIC_SUPABASE_URL}/rest/v1/order_tracking`,
         {
           method: 'POST',
@@ -111,19 +118,26 @@ export default function CheckoutPage() {
             'Prefer': 'return=minimal'
           },
           body: JSON.stringify({
-            order_id: order[0].id,
-            status: 'Order placed successfully',
+            order_id: orderId,
+            status: 'Order placed',
+            location: 'Online Store',
             notes: 'Your order has been received and is being processed.',
           }),
         }
       );
 
+      if (!trackingResponse.ok) {
+        const errBody = await trackingResponse.text();
+        console.error('Failed to create tracking entry:', errBody);
+        // Don't throw here — order is already created
+      }
+
       // Clear cart and redirect
       clearCart();
       router.push(`/track-order?tracking=${trackingNumber}&success=true`);
-    } catch (error) {
+    } catch (error: any) {
       console.error('Checkout error:', error);
-      alert('There was an error processing your order. Please try again.');
+      alert(`There was an error processing your order: ${error.message}`);
     } finally {
       setLoading(false);
     }
@@ -273,7 +287,7 @@ export default function CheckoutPage() {
                         <p className="text-sm text-gray-500">Qty: {item.quantity}</p>
                       </div>
                       <p className="font-medium text-gray-900">
-                        ${(item.product.price * item.quantity).toLocaleString()}
+                        ₦{(item.product.price * item.quantity).toLocaleString()}
                       </p>
                     </div>
                   ))}
@@ -283,7 +297,7 @@ export default function CheckoutPage() {
                 <div className="border-t pt-4 space-y-3">
                   <div className="flex justify-between text-gray-600">
                     <span>Subtotal</span>
-                    <span>${getTotalPrice().toLocaleString()}</span>
+                    <span>₦{getTotalPrice().toLocaleString()}</span>
                   </div>
                   <div className="flex justify-between text-gray-600">
                     <span>Shipping</span>
@@ -292,7 +306,7 @@ export default function CheckoutPage() {
                   <div className="border-t pt-3">
                     <div className="flex justify-between text-lg font-bold text-gray-900">
                       <span>Total</span>
-                      <span className="text-primary-600">${getTotalPrice().toLocaleString()}</span>
+                      <span className="text-primary-600">₦{getTotalPrice().toLocaleString()}</span>
                     </div>
                   </div>
                 </div>

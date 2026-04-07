@@ -14,7 +14,7 @@ export default function Header() {
     { href: '/', label: 'Home' },
     { href: '/products?category=laptop', label: 'Laptops' },
     { href: '/products?category=keyboard', label: 'Keyboards' },
-    { href: '/products?category=mouse', label: 'Mice' },
+    { href: '/products?category=mouse', label: 'Mouse' },
     { href: '/products?category=external_hard_drive', label: 'Storage' },
     { href: '/track-order', label: 'Track Order' },
   ];

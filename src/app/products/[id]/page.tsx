@@ -94,7 +94,7 @@ export default function ProductDetailPage() {
               </p>
               <h1 className="text-3xl font-bold text-gray-900 mb-4">{product.name}</h1>
               <p className="text-4xl font-bold text-primary-600 mb-6">
-                ${product.price.toLocaleString()}
+                ₦{product.price.toLocaleString()}
               </p>
 
               <div className="border-t border-b py-6 mb-6">
