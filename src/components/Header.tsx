@@ -12,10 +12,7 @@ export default function Header() {
 
   const navLinks = [
     { href: '/', label: 'Home' },
-    { href: '/products?category=laptop', label: 'Laptops' },
-    { href: '/products?category=keyboard', label: 'Keyboards' },
-    { href: '/products?category=mouse', label: 'Mouse' },
-    { href: '/products?category=external_hard_drive', label: 'Storage' },
+    { href: '/products', label: 'Products' },
     { href: '/track-order', label: 'Track Order' },
   ];
 
