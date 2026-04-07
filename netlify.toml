@@ -4,8 +4,9 @@
 
 [build.environment]
   NEXT_TELEMETRY_DISABLED = "1"
+  # Exclude Next.js build output from secrets scanning
+  # NEXT_PUBLIC_* keys are intentionally public and get bundled by webpack
+  SECRETS_SCAN_OMIT_PATHS = ".next,.netlify,.netlify/functions-internal"
 
-# Disable secrets scanning for environment variables set in Netlify dashboard
-# The Supabase keys are legitimate secrets, not leaked credentials
 [[plugins]]
   package = "@netlify/plugin-nextjs"
